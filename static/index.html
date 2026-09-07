@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UPI Shield — AI Scam & Coercion Detector</title>
+    <meta name="description"
+        content="AI-powered contextual digital payment scam and coercion detector with bilingual safety warnings." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+    <!-- ── Header ─────────────────────────────────── -->
+    <header id="app-header">
+        <div class="header-glow"></div>
+        <div class="header-content">
+            <div class="brand">
+                <div class="shield-icon">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 2L4 10V19C4 29.5 11 36.5 20 38C29 36.5 36 29.5 36 19V10L20 2Z"
+                            stroke="url(#shield-grad)" stroke-width="2.5" fill="url(#shield-fill)" />
+                        <path d="M14 20L18 24L26 16" stroke="#fff" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <defs>
+                            <linearGradient id="shield-grad" x1="4" y1="2" x2="36" y2="38">
+                                <stop stop-color="#22d3ee" />
+                                <stop offset="1" stop-color="#06b6d4" />
+                            </linearGradient>
+                            <linearGradient id="shield-fill" x1="4" y1="2" x2="36" y2="38">
+                                <stop stop-color="rgba(6,182,212,0.25)" />
+                                <stop offset="1" stop-color="rgba(6,182,212,0.08)" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1>UPI Shield</h1>
+                    <p class="tagline">AI-Powered Scam &amp; Coercion Detector</p>
+                </div>
+            </div>
+            <div class="header-badge" id="model-badge">
+                <span class="badge-dot"></span>
+                <span id="model-status-text">Initializing…</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ───────────────────────────────────── -->
+    <main id="app-main">
+        <!-- Left: Input Panel -->
+        <section class="panel input-panel" id="input-panel">
+            <div class="panel-header">
+                <h2>📩 Analyze Message</h2>
+                <div class="source-tabs" id="source-tabs">
+                    <button class="tab active" data-source="sms">SMS</button>
+                    <button class="tab" data-source="whatsapp">WhatsApp</button>
+                    <button class="tab" data-source="upi_note">UPI Note</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <textarea id="message-input"
+                    placeholder="Paste a suspicious message here…&#10;&#10;Example: &quot;URGENT: Your electricity connection will be disconnected within 2 hours. Pay Rs 1500 immediately.&quot;"
+                    rows="7"></textarea>
+                <div class="input-footer">
+                    <span class="char-count" id="char-count">0 chars</span>
+                    <button class="btn-clear" id="btn-clear" title="Clear">✕</button>
+                </div>
+            </div>
+
+            <button class="btn-analyze" id="btn-analyze">
+                <span class="btn-text">🔍 Analyze Message</span>
+                <span class="btn-loader" hidden>
+                    <span class="spinner"></span> Analyzing…
+                </span>
+            </button>
+
+            <!-- Sample Messages -->
+            <div class="samples-section">
+                <label class="samples-label">Try sample scam messages:</label>
+                <div class="sample-chips" id="sample-chips"></div>
+            </div>
+
+            <!-- UPI Intent Parser -->
+            <div class="upi-section">
+                <h3>🔗 UPI Intent Parser</h3>
+                <input type="text" id="upi-input" placeholder="upi://pay?pa=merchant@upi&pn=Name&am=1000" />
+                <button class="btn-upi" id="btn-upi">Parse UPI Link</button>
+                <div class="upi-result" id="upi-result" hidden></div>
+            </div>
+        </section>
+
+        <!-- Right: Results Panel -->
+        <section class="panel results-panel" id="results-panel">
+            <!-- Placeholder when no results -->
+            <div class="results-placeholder" id="results-placeholder">
+                <div class="placeholder-icon">🛡️</div>
+                <h3>Ready to Protect You</h3>
+                <p>Paste a message and click <strong>Analyze</strong> to detect potential scams.</p>
+            </div>
+
+            <!-- Results (hidden initially) -->
+            <div class="results-content" id="results-content" hidden>
+                <!-- Threat Meter -->
+                <div class="threat-meter-card" id="threat-meter-card">
+                    <h3>Threat Assessment</h3>
+                    <div class="meter-container">
+                        <svg class="meter-svg" viewBox="0 0 200 200">
+                            <circle class="meter-bg" cx="100" cy="100" r="85" />
+                            <circle class="meter-fill" id="meter-fill" cx="100" cy="100" r="85" />
+                        </svg>
+                        <div class="meter-value">
+                            <span class="score" id="threat-score">0</span>
+                            <span class="label" id="threat-label">LOW</span>
+                        </div>
+                    </div>
+                    <div class="model-info" id="model-info"></div>
+                </div>
+
+                <!-- Category Breakdown -->
+                <div class="categories-card" id="categories-card">
+                    <h3>Category Breakdown</h3>
+                    <div class="category-bars" id="category-bars"></div>
+                </div>
+
+                <!-- Explanations -->
+                <div class="explanations-card" id="explanations-card">
+                    <h3>🔎 Analysis Details</h3>
+                    <div id="explanations-list"></div>
+                </div>
+
+                <!-- Safety Cards -->
+                <div class="safety-section" id="safety-section">
+                    <h3>🛡️ Safety Advisory / सुरक्षा सलाह</h3>
+                    <div id="safety-cards"></div>
+                </div>
+
+                <!-- Detected Indicators -->
+                <div class="indicators-card" id="indicators-card">
+                    <h3>🏷️ Detected Indicators</h3>
+                    <div class="indicators-grid" id="indicators-grid"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── Footer ─────────────────────────────────── -->
+    <footer id="app-footer">
+        <p>UPI Shield v1.0 — Built for safer digital payments in India 🇮🇳</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
